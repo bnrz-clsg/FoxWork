@@ -1,8 +1,7 @@
-import 'package:capstone_project/screens/pin_location_screen.dart';
-import 'package:capstone_project/screens/search.dart';
-import 'package:capstone_project/screens/setting_screen.dart';
-import 'package:capstone_project/shelter_user/rescuerInfo.dart';
-import 'package:capstone_project/shelter_user/tabs/home_tab.dart';
+import 'package:capstone_project/screens/tabs/home_tab.dart';
+import 'package:capstone_project/screens/tabs/pin_location_screen.dart';
+import 'package:capstone_project/screens/tabs/rescuerInfo.dart';
+import 'package:capstone_project/screens/tabs/setting_screen.dart';
 import 'package:capstone_project/style/brandcolor.dart';
 import 'package:flutter/material.dart';
 
@@ -46,7 +45,7 @@ class _ShelterPageState extends State<ShelterPage>
         children: <Widget>[
           HomeTab(),
           RescuerInfo(),
-          Search(),
+          CurrentLocation(),
           SettingScreen(),
         ],
       ),

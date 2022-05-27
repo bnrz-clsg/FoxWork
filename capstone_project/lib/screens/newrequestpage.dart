@@ -145,7 +145,9 @@ class _NewRequestPageState extends State<NewRequestPage> {
                         onPressed: () {
                           if (status == 'accepted') {
                             status = 'ARRIVED';
-                            requestRef.child('status').set(('on-rescue'));
+                            shelterRequestRef
+                                .child('status')
+                                .set(('on-rescue'));
 
                             setState(() {
                               buttonTitle = ' ';
@@ -253,14 +255,14 @@ class _NewRequestPageState extends State<NewRequestPage> {
 //<Retrive the ID of shelter request>
   void acceptRequest() {
     String requestID = widget.requestShelter.requestID;
-    requestRef = FirebaseDatabase.instance
+    shelterRequestRef = FirebaseDatabase.instance
         .reference()
         .child('shelterRequest/$requestID');
 
-    requestRef.child('status').set('accepted');
-    requestRef.child('rescuerName').set(currentSheltersInfo.fullname);
-    requestRef.child('rescuerPhone').set(currentSheltersInfo.phone);
-    requestRef.child('shelters_id').set(currentFirebaseUser.uid);
+    shelterRequestRef.child('status').set('accepted');
+    shelterRequestRef.child('rescuerName').set(currentSheltersInfo.fullname);
+    shelterRequestRef.child('rescuerPhone').set(currentSheltersInfo.phone);
+    shelterRequestRef.child('shelters_id').set(currentFirebaseUser.uid);
     // requestRef.child('path'
 
     Map locationMap = {
@@ -268,7 +270,7 @@ class _NewRequestPageState extends State<NewRequestPage> {
       'longitude': currentPosition.longitude.toString(),
     };
 
-    requestRef.child('rescuer_location').set(locationMap);
+    shelterRequestRef.child('rescuer_location').set(locationMap);
 
     DatabaseReference historyRef = FirebaseDatabase.instance
         .reference()
@@ -312,7 +314,7 @@ class _NewRequestPageState extends State<NewRequestPage> {
         'latitude': myPosition.latitude.toString(),
         'longitude': myPosition.longitude.toString(),
       };
-      requestRef.child('rescuers_location').set(locationMap);
+      shelterRequestRef.child('rescuers_location').set(locationMap);
     });
   }
 
@@ -457,7 +459,7 @@ class _NewRequestPageState extends State<NewRequestPage> {
   void endRescue() {
     timer.cancel();
 
-    requestRef.child('status').set('rescued');
+    shelterRequestRef.child('status').set('rescued');
 
     rescuerPositionStream.cancel();
 

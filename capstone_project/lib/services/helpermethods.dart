@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:capstone_project/models/shelters.dart';
 import 'package:http/http.dart' as http;
 import 'package:capstone_project/dataprovider/appdata.dart';
 import 'package:capstone_project/models/address.dart';
@@ -27,8 +28,8 @@ class HelperMethods {
         FirebaseDatabase.instance.reference().child('users/$userid');
     _userRef.once().then((DataSnapshot snapshot) {
       if (snapshot.value != null) {
-        currentUserInfo = MeUser.fromSnapshot(snapshot);
-        print('my name is ${currentUserInfo.username}');
+        currentSheltersInfo = Shelters.fromSnapshot(snapshot);
+        print('my name is ${currentSheltersInfo.fullname}');
       }
     });
   }

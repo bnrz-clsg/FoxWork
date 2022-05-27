@@ -1,5 +1,5 @@
 import 'package:capstone_project/models/user.dart';
-import 'package:capstone_project/screens/registration_screen.dart';
+import 'package:capstone_project/screens/rescuerregistration.dart';
 import 'package:capstone_project/style/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +53,7 @@ Widget userInfoCard(MeUser authUser, context, authUserUpdated) {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => UserRegistration()));
+                                builder: (context) => RescuerRegistration()));
                       },
                       child: Text(
                         'ACTIVATE ACCOUNT',

@@ -1,5 +1,4 @@
 import 'dart:async';
-// import 'dart:js';
 import 'package:capstone_project/models/shelters.dart';
 import 'package:capstone_project/services/globalvariable.dart';
 import 'package:capstone_project/services/helpermethods.dart';

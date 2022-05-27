@@ -6,7 +6,7 @@ import 'package:capstone_project/widgets/button_widget.dart';
 import 'package:capstone_project/widgets/user_info_card.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
-import '../auth.dart';
+import '../../auth.dart';
 
 class SettingScreen extends StatefulWidget {
   @override

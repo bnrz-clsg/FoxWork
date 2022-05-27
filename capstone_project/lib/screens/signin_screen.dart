@@ -1,3 +1,4 @@
+import 'package:capstone_project/screens/shelter_page.dart';
 import 'package:capstone_project/screens/signup_screen.dart';
 import 'package:capstone_project/services/globalvariable.dart';
 import 'package:capstone_project/widgets/login_header.dart';
@@ -7,9 +8,7 @@ import 'package:capstone_project/widgets/wildraisedbutton.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-
 import '../auth.dart';
-import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'LoginScreen';
@@ -156,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         if (result != null) {
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
-                                builder: (context) => HomeScreenMain()),
+                                builder: (context) => ShelterPage()),
                           );
                         }
                       });
@@ -168,7 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => HomeScreenMain()));
+                              builder: (context) => ShelterPage()));
                     },
                     title: 'tester',
                   ),
@@ -219,7 +218,7 @@ class _LoginScreenState extends State<LoginScreen> {
       userRef.child(_firebaseUser.uid).once().then((DataSnapshot snap) {
         if (snap.value != null) {
           Navigator.pushNamedAndRemoveUntil(
-              context, HomeScreenMain.id, (route) => false);
+              context, ShelterPage.id, (route) => false);
         } else {
           // Exit ProgressDialog
           Navigator.pop(context);

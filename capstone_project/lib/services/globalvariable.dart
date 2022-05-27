@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:capstone_project/models/shelters.dart';
-import 'package:capstone_project/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:geolocator/geolocator.dart';
@@ -19,15 +18,12 @@ final CameraPosition googlePlexOne = CameraPosition(
 );
 
 User currentFirebaseUser;
-MeUser currentUserInfo;
 Shelters currentSheltersInfo;
 
 //this is
 DatabaseReference shelterRequestRef;
 
 //this is rideRef (request shelter collection)
-DatabaseReference requestRef;
-
 Position currentPosition;
 
 StreamSubscription<Position> homeTabPositionStream;
@@ -37,7 +33,7 @@ final assetsAudioPlayer = AssetsAudioPlayer();
 
 //this is user collection
 DatabaseReference userRef =
-    FirebaseDatabase.instance.reference().child('users');
+    FirebaseDatabase.instance.reference().child('shelters');
 
 final DateTime now = DateTime.now();
 final DateFormat formatter = DateFormat('yyyy-MM-dd');

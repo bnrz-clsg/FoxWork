@@ -1,4 +1,4 @@
-import 'package:capstone_project/screens/home_screen.dart';
+import 'package:capstone_project/screens/shelter_page.dart';
 import 'package:capstone_project/services/globalvariable.dart';
 import 'package:capstone_project/widgets/login_header.dart';
 import 'package:capstone_project/widgets/progress_message_dialog.dart';
@@ -251,7 +251,7 @@ class _SignupScreenState extends State<SignupScreen> {
       };
       userRef.child(firebaseUser.uid).set(_map);
       Navigator.pushNamedAndRemoveUntil(
-          context, HomeScreenMain.id, (route) => false);
+          context, ShelterPage.id, (route) => false);
     } else {
       // Exit ProgressDialog
       Navigator.pop(context);
