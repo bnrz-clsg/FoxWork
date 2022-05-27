@@ -1,0 +1,616 @@
+import 'package:capstone_project/auth.dart';
+import 'package:capstone_project/screens/profile.dart';
+import 'package:capstone_project/services/globalvariable.dart';
+import 'package:capstone_project/widgets/drawer_list.dart';
+import 'package:capstone_project/widgets/top_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+class Registration extends StatefulWidget {
+  static const id = 'Registration';
+  @override
+  _RegistrationState createState() => _RegistrationState();
+}
+
+class _RegistrationState extends State<Registration> {
+  GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  final _formKey = GlobalKey<FormState>();
+
+  DateTime selectedDate = DateTime.now();
+
+  _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate, // Refer step 1
+      firstDate: DateTime(1950),
+      lastDate: DateTime(2025),
+    );
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+        tecBOD.text = DateFormat.yMd().format(selectedDate);
+      });
+  }
+
+  var items = ['Male', 'Female', 'Prefer not to say'];
+  var idtype = ['Student ID', 'Private ID', 'Government ID'];
+
+  var tecFirstName = TextEditingController();
+  var tecLastName = TextEditingController();
+  var tecMidName = TextEditingController();
+  var tecBOD = TextEditingController();
+  var tecGender = TextEditingController();
+  var tecPhone = TextEditingController();
+  var tecIDType = TextEditingController();
+  var tecIDNumber = TextEditingController();
+  var tecEmergencyName = TextEditingController();
+  var tecEmergencyPhone = TextEditingController();
+
+  void registerUser(context) {
+    final isValid = _formKey.currentState.validate();
+    if (isValid) {
+      //<ID of current user>
+      String id = currentFirebaseUser.uid;
+
+      // <Start Firebase RD>
+      DatabaseReference userRef =
+          FirebaseDatabase.instance.reference().child('users/$id');
+
+      // <Start Firebastore>
+      DocumentReference _userReg =
+          FirebaseFirestore.instance.collection('users').doc('$id');
+
+      // <Map for full UserInfo>
+      Map<String, dynamic> userInfo = {
+        'email': email,
+        'username': gusername,
+        'firstName': tecFirstName.text.trim(),
+        'lastName': tecLastName.text.trim(),
+        'midName': tecMidName.text.trim(),
+        'birthday': tecBOD.text.trim(),
+        'gender': tecGender.text.trim(),
+        'phone': tecPhone.text.trim(),
+        'idType': tecIDType.text.trim(),
+        'idNumber': tecIDNumber.text.trim(),
+        'emergencyName': tecEmergencyName.text.trim(),
+        'emergencyPhone': tecEmergencyPhone.text.trim(),
+      };
+
+      //<Final Map to be implemented on firebase>
+      Map<String, dynamic> map = {
+        'status': 'false',
+        'created_at': DateTime.now().toString(),
+        'userInfo': userInfo,
+      };
+      // Firebase map,
+      // In here we push user details into Firebase realtime and firestore
+      //<Map for firebase realtimeDatabase>
+      userRef.set(map);
+      //<Firestore map. Should be Dynamic>
+      _userReg.set(map);
+      // <Navigator push "If registration successful" back to view profile>
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => MyProfile()));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: ExactAssetImage('assets/images/loginBG.jpg'),
+          fit: BoxFit.fill,
+          alignment: Alignment.topCenter,
+        ),
+      ),
+      child: Scaffold(
+          // key: scaffoldKey,
+          backgroundColor: Colors.transparent,
+          drawer: DrawerList(),
+          body: SingleChildScrollView(
+              physics: ClampingScrollPhysics(),
+              child: Form(
+                  key: _formKey,
+                  child: Column(children: <Widget>[
+                    TopBar(),
+                    SizedBox(height: 10),
+                    Padding(
+                        padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                        child: Container(
+                            child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                              CircleAvatar(
+                                radius: 60.0,
+                                backgroundColor:
+                                    Color.fromRGBO(110, 110, 110, 10),
+                                backgroundImage:
+                                    AssetImage("assets/images/user_icon.png"),
+                              ),
+                              Row(children: <Widget>[
+                                RaisedButton(
+                                    shape: new RoundedRectangleBorder(
+                                        borderRadius:
+                                            new BorderRadius.circular(5)),
+                                    color: Colors.grey[400],
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Row(children: [
+                                      Text('Cancel',
+                                          style: TextStyle(fontSize: 20)),
+                                    ])),
+                                SizedBox(width: 5),
+                                RaisedButton(
+                                    shape: new RoundedRectangleBorder(
+                                        borderRadius:
+                                            new BorderRadius.circular(5)),
+                                    color: Colors.grey[200],
+                                    onPressed: () {
+                                      registerUser(context);
+                                    },
+                                    child: Row(children: [
+                                      Icon(Icons.check),
+                                      SizedBox(width: 5),
+                                      Text('Save',
+                                          style: TextStyle(fontSize: 20)),
+                                    ]))
+                              ])
+                            ]))),
+                    Padding(
+                        padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                        child: Container(
+                            height: 800,
+                            // color: Colors.amber,
+                            child: ListView(children: <Widget>[
+                              SizedBox(height: 10),
+                              // user name info
+                              container(Column(children: <Widget>[
+                                SizedBox(height: 10),
+                                TextFormField(
+                                  controller: tecFirstName,
+                                  validator: (value) {
+                                    if (value.isEmpty || value.length < 1) {
+                                      return 'Please provide valid name';
+                                    }
+                                    return null;
+                                  },
+                                  textCapitalization:
+                                      TextCapitalization.sentences,
+                                  decoration: InputDecoration(
+                                    labelText: 'First name',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                TextFormField(
+                                  controller: tecLastName,
+                                  validator: (value) {
+                                    if (value.isEmpty || value.length < 1) {
+                                      return 'Please provide valid Last name';
+                                    }
+                                    return null;
+                                  },
+                                  textCapitalization:
+                                      TextCapitalization.sentences,
+                                  decoration: InputDecoration(
+                                    labelText: 'Last name',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                TextFormField(
+                                    controller: tecMidName,
+                                    validator: (value) {
+                                      if (value.isEmpty || value.length < 1) {
+                                        return 'Please provide valid Middle name';
+                                      }
+                                      return null;
+                                    },
+                                    textCapitalization:
+                                        TextCapitalization.sentences,
+                                    decoration: InputDecoration(
+                                      labelText: 'Middle name',
+                                      border: OutlineInputBorder(),
+                                    ))
+                              ])),
+                              SizedBox(height: 10),
+                              //DOB & GENDER
+                              Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    InkWell(
+                                        onTap: () => _selectDate(context),
+                                        child: Container(
+                                            width: 205,
+                                            decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(4),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.grey,
+                                                    spreadRadius: 0.5,
+                                                    // blurRadius: 5.0,
+                                                    // offset: Offset(0.7, 0.5),
+                                                  ),
+                                                ]),
+                                            child: Padding(
+                                                padding: EdgeInsets.all(5),
+                                                child: TextFormField(
+                                                  enabled: false,
+                                                  controller: tecBOD,
+                                                  validator: (value) {
+                                                    if (value.isEmpty) {
+                                                      return 'invalid input';
+                                                    }
+                                                    return null;
+                                                  },
+                                                  decoration: InputDecoration(
+                                                      hintText:
+                                                          "${selectedDate.toLocal()}"
+                                                              .split(' ')[0],
+                                                      labelText:
+                                                          'Date of birth',
+                                                      border:
+                                                          OutlineInputBorder(),
+                                                      suffixIcon: Icon(
+                                                        Icons.calendar_today,
+                                                        color: Colors.blue,
+                                                      )),
+                                                )))),
+                                    Container(
+                                        width: 205,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(4),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey,
+                                                // blurRadius: 5.0,
+                                                spreadRadius: 0.5,
+                                                // offset: Offset(0.7, 0.5),
+                                              ),
+                                            ]),
+                                        child: Padding(
+                                            padding: EdgeInsets.all(5),
+                                            child: TextFormField(
+                                                controller: tecGender,
+                                                validator: (value) {
+                                                  if (value.isEmpty) {
+                                                    return 'Select Gender';
+                                                  }
+                                                  return null;
+                                                },
+                                                decoration: InputDecoration(
+                                                    labelText: 'Gender',
+                                                    border:
+                                                        OutlineInputBorder(),
+                                                    suffixIcon: PopupMenuButton<
+                                                            String>(
+                                                        icon: const Icon(
+                                                          Icons.arrow_drop_down,
+                                                          color: Colors.blue,
+                                                        ),
+                                                        onSelected:
+                                                            (String value) {
+                                                          tecGender.text =
+                                                              value;
+                                                        },
+                                                        itemBuilder:
+                                                            (BuildContext
+                                                                context) {
+                                                          return items.map<
+                                                                  PopupMenuItem<
+                                                                      String>>(
+                                                              (String value) {
+                                                            return new PopupMenuItem(
+                                                                child: new Text(
+                                                                    value),
+                                                                value: value);
+                                                          }).toList();
+                                                        })))))
+                                  ]),
+                              SizedBox(height: 10),
+                              //contact info
+                              container(Column(children: [
+                                TextFormField(
+                                  controller: tecPhone,
+                                  validator: (value) {
+                                    if (value.isEmpty || value.length < 11) {
+                                      return 'Please provide valid phone no.';
+                                    }
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                    labelText: 'Phone number (0900 000 0000)',
+                                    border: OutlineInputBorder(),
+                                    prefixIcon: Icon(
+                                      Icons.phone_android,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                TextFormField(
+                                    enabled: false,
+                                    decoration: InputDecoration(
+                                        labelText: email,
+                                        border: OutlineInputBorder(),
+                                        prefixIcon: Icon(
+                                          Icons.email,
+                                          color: Colors.blue,
+                                        )))
+                              ])),
+                              SizedBox(height: 10),
+                              //identifination info
+                              container(Column(children: [
+                                TextFormField(
+                                    controller: tecIDType,
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return 'Please select to options';
+                                      }
+                                      return null;
+                                    },
+                                    decoration: InputDecoration(
+                                        labelText:
+                                            'ID Type (student, private, government)',
+                                        border: OutlineInputBorder(),
+                                        suffixIcon: PopupMenuButton<String>(
+                                          icon: const Icon(
+                                            Icons.arrow_drop_down,
+                                            color: Colors.blue,
+                                          ),
+                                          onSelected: (String value) {
+                                            tecIDType.text = value;
+                                          },
+                                          itemBuilder: (BuildContext context) {
+                                            return idtype
+                                                .map<PopupMenuItem<String>>(
+                                                    (String value) {
+                                              return new PopupMenuItem(
+                                                  child: new Text(value),
+                                                  value: value);
+                                            }).toList();
+                                          },
+                                        ))),
+                                SizedBox(height: 10),
+                                TextFormField(
+                                  controller: tecIDNumber,
+                                  validator: (value) {
+                                    if (value.isEmpty || value.length < 5) {
+                                      return 'Please provide valid ID number.';
+                                    }
+                                    return null;
+                                  },
+                                  decoration: InputDecoration(
+                                    labelText: 'ID  Number',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Image(
+                                  image: AssetImage('assets/images/id.png'),
+                                  height: 250,
+                                )
+                              ])),
+                              SizedBox(height: 10),
+                              //emergency contact
+                              container(Column(children: [
+                                Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                        'In case of emergency: (contact person)',
+                                        style: TextStyle(color: Colors.black))),
+                                Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Expanded(
+                                          child: TextFormField(
+                                              controller: tecEmergencyName,
+                                              validator: (value) {
+                                                if (value.isEmpty ||
+                                                    value.length < 5) {
+                                                  return 'Please provide guardian name.';
+                                                }
+                                                return null;
+                                              },
+                                              textCapitalization:
+                                                  TextCapitalization.sentences,
+                                              decoration: InputDecoration(
+                                                labelText: 'Fulll name',
+                                              ))),
+                                      SizedBox(width: 10),
+                                      Expanded(
+                                          child: TextFormField(
+                                              controller: tecEmergencyPhone,
+                                              validator: (value) {
+                                                if (value.isEmpty ||
+                                                    value.length < 5) {
+                                                  return 'Please provide phone number.';
+                                                }
+                                                return null;
+                                              },
+                                              decoration: InputDecoration(
+                                                labelText: 'Contact no.',
+                                              ))),
+                                    ])
+                              ])),
+                              SizedBox(height: 25),
+                            ])))
+                  ])))),
+    );
+  }
+}
+
+Widget container(Column column) {
+  return Container(
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(5),
+              topRight: Radius.circular(5),
+              bottomLeft: Radius.circular(5),
+              bottomRight: Radius.circular(5)),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black26,
+                blurRadius: 15.0,
+                spreadRadius: 0.8,
+                offset: Offset(0.7, 0.7))
+          ]),
+      child: Padding(padding: EdgeInsets.all(12), child: column));
+}
+
+
+//    userinfo //
+
+import 'package:capstone_project/screens/registration_screen.dart';
+import 'package:capstone_project/services/globalvariable.dart';
+import 'package:capstone_project/services/helpermethods.dart';
+import 'package:capstone_project/shelter_user/shelter_page.dart';
+import 'package:capstone_project/style/theme.dart';
+import 'package:capstone_project/utils/strings.dart';
+import 'package:capstone_project/widgets/wildraisedbutton.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+
+import 'alert_dialog.dart';
+
+class HostShelter extends StatefulWidget {
+  @override
+  _HostShelterState createState() => _HostShelterState();
+}
+
+class _HostShelterState extends State<HostShelter> {
+  void initState() {
+    super.initState();
+    HelperMethods.getCurrentUserInfo();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var _userValidator = FirebaseDatabase.instance
+        .reference()
+        .child('users/${currentFirebaseUser.uid}');
+    return StreamBuilder(
+        stream: _userValidator.onValue,
+        builder: (context, snapshot) {
+          return Container(
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Container(
+                      height: 50,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                        image:
+                            AssetImage('assets/images/shelter_appbar_icon.png'),
+                        fit: BoxFit.fill,
+                      )),
+                    ),
+                    Text(
+                      AppContent.hello,
+                      style: TextStyle(
+                          fontSize: 12.0, letterSpacing: 1, color: Colors.grey),
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      AppContent.welcome,
+                      style: TextStyle(
+                          fontSize: 14.0,
+                          letterSpacing: 1,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    Divider(),
+                    SizedBox(height: 20),
+                    Text(AppContent.startShelter),
+                    SizedBox(height: 15),
+                    WildRaisedButton(
+                      color: CustomTheme.green,
+                      style: TextStyle(letterSpacing: 1.5, fontSize: 16),
+                      title: AppContent.openShelter,
+                      size: Size(double.infinity, 35),
+                      onPressed: () {
+                        if (snapshot.data.snapshot.value == null) {
+                        } else if (currentUserInfo.status == "approve") {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RescuerPage()),
+                          );
+                        } else {
+                          var baseDialog = BaseAlertDialog(
+                              title: AppContent.auth,
+                              content: AppContent.authProcess,
+                              yesOnPressed: () {
+                                Navigator.pop(context);
+                              },
+                              yes: AppContent.okText,
+                              no: "");
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) => baseDialog);
+                        }
+                      },
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  void rescuerValidator() {
+    DatabaseReference rescuerRef = FirebaseDatabase.instance
+        .reference()
+        .child('shelter/${currentFirebaseUser.uid}/status');
+    rescuerRef.once().then((DataSnapshot snapshot)
+    {
+      var rescuerStatus = (snapshot.value);
+
+      if (snapshot == null) {
+
+        var baseDialog = BaseAlertDialog(
+            title: AppContent.acctAuth,
+            content: AppContent.regAcct,
+            yesOnPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => UserRegistration()));
+            },
+            noOnPressed: () {
+              Navigator.pop(context);
+            },
+            yes: AppContent.continueText,
+            no: AppContent.cancelText);
+        showDialog(
+            context: context, builder: (BuildContext context) => baseDialog);
+
+      }
+      else if(rescuerStatus == 'true'){
+Navigator.push(context, MaterialPageRoute(builder: (context) => ));
+
+      }
+    });
+  }
+}
+
+
