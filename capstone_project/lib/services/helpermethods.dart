@@ -20,44 +20,6 @@ import 'package:provider/provider.dart';
 
 class HelperMethods {
   // <Global Register FirebaseDatabase>
-  static void getCurrentUserInfo() async {
-    currentFirebaseUser = FirebaseAuth.instance.currentUser;
-    String userid = currentFirebaseUser.uid;
-
-    DatabaseReference _userRef =
-        FirebaseDatabase.instance.reference().child('users/$userid');
-    _userRef.once().then((DataSnapshot snapshot) {
-      if (snapshot.value != null) {
-        currentSheltersInfo = Shelters.fromSnapshot(snapshot);
-        print('my name is ${currentSheltersInfo.fullname}');
-      }
-    });
-  }
-
-  static Future<String> findCordinateAddress(Position position, context) async {
-    String placeAddress = '';
-    var connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult != ConnectivityResult.mobile &&
-        connectivityResult != ConnectivityResult.wifi) {
-      return placeAddress;
-    }
-    String url =
-        'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$mapKey';
-
-    var response = await RequestHelper.getRequest(url);
-
-    if (response != 'failed') {
-      placeAddress = response['results'][0]['formatted_address'];
-      Address pickupAddress = new Address();
-      pickupAddress.longitude = position.longitude;
-      pickupAddress.latitude = position.latitude;
-      pickupAddress.placeName = placeAddress;
-
-      Provider.of<AppData>(context, listen: false)
-          .updatePickupAddress(pickupAddress);
-    }
-    return placeAddress;
-  }
 
   static Future<DirectionDetails> getDirectionDetails(
       LatLng startPosition, LatLng endPosition) async {
@@ -97,7 +59,7 @@ class HelperMethods {
     Geofire.removeLocation(currentFirebaseUser.uid);
   }
 
-  static void enableHomeTabLocationUpdate() {
+  static void enableHomeTabLocationUpdates() {
     homeTabPositionStream.resume();
     Geofire.setLocation(currentFirebaseUser.uid, currentPosition.latitude,
         currentPosition.longitude);
@@ -112,38 +74,5 @@ class HelperMethods {
         message: 'Please wait',
       ),
     );
-  }
-
-  static sendNotification(String token, context, String rescuer_id) async {
-    var pickUp = Provider.of<AppData>(context, listen: false).pickupAddress;
-
-    Map<String, String> headerMap = {
-      'Content-Type': 'application/json',
-      'Authorization': serverKey,
-    };
-
-    Map notificationMap = {
-      'title': 'NEW RESCUE REQUEST',
-      'body': 'Location, ${pickUp.placeName}'
-    };
-
-    Map dataMap = {
-      'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-      'id': '1',
-      'status': 'done',
-      'rescuer_id': rescuer_id,
-    };
-
-    Map bodyMap = {
-      'notification': notificationMap,
-      'data': dataMap,
-      'priority': 'high',
-      'to': token
-    };
-
-    var response = await http.post('https://fcm.googleapis.com/fcm/send',
-        headers: headerMap, body: jsonEncode(bodyMap));
-
-    print(response.body);
   }
 }

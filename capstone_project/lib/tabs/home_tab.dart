@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'package:capstone_project/models/shelters.dart';
+import 'package:capstone_project/screens/rescuerregistration.dart';
 import 'package:capstone_project/services/globalvariable.dart';
-import 'package:capstone_project/services/helpermethods.dart';
 import 'package:capstone_project/services/pushnotificationservice.dart';
 import 'package:capstone_project/style/brandcolor.dart';
+import 'package:capstone_project/style/theme.dart';
+import 'package:capstone_project/utils/strings.dart';
 import 'package:capstone_project/widgets/confirmSheet.dart';
 import 'package:capstone_project/widgets/wildoutlinebutton.dart';
+import 'package:capstone_project/widgets/wildraisedbutton.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -23,38 +26,35 @@ class _HomeTabState extends State<HomeTab> {
   Completer<GoogleMapController> _controller = Completer();
 
   var geolocator = Geolocator();
+  //  This line decides the radius of the rescuer can receive an SOS
   var locationOptions = LocationOptions(
-      accuracy: LocationAccuracy.bestForNavigation, distanceFilter: 4);
+      accuracy: LocationAccuracy.bestForNavigation, distanceFilter: 100);
 
-// <On press change button>
+  // <On press change button>
   String availabilityTitle = 'GO ONLINE';
   Color availabilityColor = BrandColors.colorOrange;
   bool isAvailable = false;
-//<end>
 
-// <Show Current postion on the map>
+  // <Show Current postion on the map>
   void setupPositionLocator() async {
     Position position = await geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+        desiredAccuracy: LocationAccuracy.bestForNavigation);
     currentPosition = position;
 
     LatLng pos = LatLng(position.latitude, position.longitude);
     CameraPosition cp = new CameraPosition(target: pos, zoom: 12);
     mapController.animateCamera(CameraUpdate.newCameraPosition(cp));
-
-    String address =
-        await HelperMethods.findCordinateAddress(position, context);
-    print(address);
   }
 
   void getCurrentShelterInfo() async {
-    currentFirebaseUser = FirebaseAuth.instance.currentUser;
+    currentFirebaseUser = await FirebaseAuth.instance.currentUser;
     DatabaseReference shelterRef = FirebaseDatabase.instance
         .reference()
         .child('shelters/${currentFirebaseUser.uid}');
     shelterRef.once().then((DataSnapshot snapshot) {
       if (snapshot.value != null) {
         currentSheltersInfo = Shelters.fromSnapshot(snapshot);
+        print(currentSheltersInfo.fullname);
       }
     });
 
@@ -66,6 +66,7 @@ class _HomeTabState extends State<HomeTab> {
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
     getCurrentShelterInfo();
   }
@@ -124,7 +125,7 @@ class _HomeTabState extends State<HomeTab> {
                                 : 'You are about to stop receiving SHELTER requests',
                             onPress: () {
                               if (!isAvailable) {
-                                goOnline();
+                                GoOnline();
                                 getUpdate();
                                 Navigator.pop(context);
 
@@ -154,9 +155,8 @@ class _HomeTabState extends State<HomeTab> {
   }
 
 //< go online and push location address to firebase database>
-  void goOnline() {
+  void GoOnline() {
     // <firebase query push location to firebase>
-
     // Geofire.initialize('sheltersNotAvailable');
     Geofire.initialize('sheltersAvailable');
     Geofire.setLocation(currentFirebaseUser.uid, currentPosition.latitude,

@@ -1,3 +1,5 @@
+import 'package:capstone_project/auth.dart';
+import 'package:capstone_project/models/shelters.dart';
 import 'package:capstone_project/models/user.dart';
 import 'package:capstone_project/screens/signin_screen.dart';
 import 'package:capstone_project/style/theme.dart';
@@ -6,7 +8,6 @@ import 'package:capstone_project/widgets/button_widget.dart';
 import 'package:capstone_project/widgets/user_info_card.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
-import '../../auth.dart';
 
 class SettingScreen extends StatefulWidget {
   @override
@@ -14,7 +15,7 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
-  MeUser authUser = MeUser();
+  Shelters authUser = Shelters();
   String output = "";
   PackageInfo _packageInfo = PackageInfo(
     appName: 'AppName',
@@ -69,7 +70,7 @@ class _SettingScreenState extends State<SettingScreen> {
               ],
             ),
           ),
-        ),  
+        ),
       ),
     );
   }

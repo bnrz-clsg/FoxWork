@@ -1,12 +1,12 @@
-import 'package:capstone_project/screens/tabs/home_tab.dart';
-import 'package:capstone_project/screens/tabs/pin_location_screen.dart';
-import 'package:capstone_project/screens/tabs/rescuerInfo.dart';
-import 'package:capstone_project/screens/tabs/setting_screen.dart';
 import 'package:capstone_project/style/brandcolor.dart';
+import 'package:capstone_project/tabs/home_tab.dart';
+import 'package:capstone_project/tabs/pin_location_screen.dart';
+import 'package:capstone_project/tabs/rescuerInfo.dart';
+import 'package:capstone_project/tabs/setting_screen.dart';
 import 'package:flutter/material.dart';
 
 class ShelterPage extends StatefulWidget {
-  static const String id = 'ShelterPage';
+  static const String id = 'shelterpage';
 
   @override
   _ShelterPageState createState() => _ShelterPageState();

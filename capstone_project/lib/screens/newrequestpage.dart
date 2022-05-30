@@ -85,7 +85,7 @@ class _NewRequestPageState extends State<NewRequestPage> {
                 child: GoogleMap(
                   mapType: MapType.normal,
                   myLocationButtonEnabled: true,
-//                  compassEnabled: true,
+                  compassEnabled: true,
                   zoomGesturesEnabled: true,
                   zoomControlsEnabled: true,
                   myLocationEnabled: true,
@@ -145,30 +145,25 @@ class _NewRequestPageState extends State<NewRequestPage> {
                         onPressed: () {
                           if (status == 'accepted') {
                             status = 'ARRIVED';
-                            shelterRequestRef
-                                .child('status')
-                                .set(('on-rescue'));
+                            shelterRequestRef.child('status').set(('arrived'));
 
                             setState(() {
-                              buttonTitle = ' ';
-                              buttonColor = Colors.transparent;
+                              buttonTitle = 'ARRIVED';
+                              buttonColor = Colors.green;
                             });
-                            showModalBottomSheet(
-                                isDismissible: false,
-                                context: context,
-                                builder: (BuildContext context) =>
-                                    RescuedSheets(
-                                      title: 'Rescuing in progress',
-                                      subtitle: 'You are about to rescue ' +
-                                          widget.requestShelter.evacUsername +
-                                          ' & others! Contact info: ' +
-                                          widget.requestShelter.evacPhone,
-                                      onPress: () {
-                                        endRescue();
-                                      },
-                                    ));
+                          } else if (status == 'ARRIVED') {
+                            status = 'On-Rescue';
+                            shelterRequestRef.child('status').set('on-rescue');
+
+                            setState(() {
+                              buttonTitle = 'END RESCUE';
+                              buttonColor = Colors.red[900];
+                            });
+
+                            startTimer();
+                          } else if (status == 'On-Rescue') {
+                            endRescue();
                           }
-                          startTimer();
                         }, // end on press
                       ),
                     ],
@@ -376,7 +371,7 @@ class _NewRequestPageState extends State<NewRequestPage> {
 
     setState(() {
       Polyline polyline = Polyline(
-        polylineId: PolylineId('poliid'),
+        polylineId: PolylineId('polyid'),
         color: Color.fromARGB(255, 95, 109, 237),
         points: polylineCoordinates,
         jointType: JointType.round,
@@ -386,7 +381,6 @@ class _NewRequestPageState extends State<NewRequestPage> {
         geodesic: true,
       );
       _polylines.add(polyline);
-//      acceptRequest();
     });
 
 //this will ensure the draw line is fit inside the map screen
@@ -456,12 +450,33 @@ class _NewRequestPageState extends State<NewRequestPage> {
     });
   }
 
-  void endRescue() {
+  void endRescue() async {
     timer.cancel();
+
+    HelperMethods.showProgressDialog(context);
+    Navigator.pop(context);
 
     shelterRequestRef.child('status').set('rescued');
 
     rescuerPositionStream.cancel();
+
+    showModalBottomSheet(
+        isDismissible: false,
+        context: context,
+        builder: (BuildContext context) => RescuedSheets(
+              title: 'Rescue Ended',
+              subtitle: 'You rescued ' +
+                  widget.requestShelter.evacUsername +
+                  ' & ' +
+                  widget.requestShelter.evacCount +
+                  ' others',
+              onPress: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+
+                HelperMethods.enableHomeTabLocationUpdates();
+              },
+            ));
 
     rescueCounts();
   }

@@ -94,6 +94,47 @@ class AppContent {
   static final String auth = "Authentication";
   static final String authProcess =
       "Your account is on process of validation! Kindly refresh in a while.. .";
-  static final String acctAuth = "Account Activation!";
+  static final String acctAuth = "Account not authenticated!";
   static final String regAcct = "Register to activate account?";
+
+  static final String signIn = 'SIGN-IN';
+  static final String signUp = 'SIGN-UP';
+  static final String email = ' Email';
+
+  static final String repassword = 'Repeat Password';
+  static final String register = 'Don\'t have RESIBO account? ';
+  static final String haveAccount = 'Already have RESIBO account!';
+  static final String googleConn = 'Connect with Google';
+  static final String facebookConn = ' Connect with Facebook';
+  static final String emailConn = 'Sign-up with Email';
+  static final String signInWith = 'Or Sign In With.. .';
+  static final String continueWith = 'Or Continue With.. .';
+  static final String continueWithFb = 'Continue With Facebook';
+  static final String continueWithGoogle = 'Continue With Google';
+  static final String enterUserEmail = 'Enter your email';
+  static final String enterUsername = 'Enter your Fullname';
+  static final String username = 'Username';
+  static final String enterPassword = 'Enter your password';
+  static final String reEnterPassword = 'Retype password';
+  static final String emailLogin = 'Email Sign-in';
+  static final String forgotPassword = 'Forgot password?';
+  static final String terms = 'Terms of Service';
+  static final String policy = 'Privacy Policy';
+  static final String termsFirst = 'By signing up, you agreed to our ';
+  static final String and = 'and ';
+  static final String uploaded = 'Uploaded receipt';
+  static final String account = 'Account ';
+  static final String settings = '& Settings';
+  static final String myCode = 'My Referral Code';
+  static final String sampleCode = 'XXXX-XXXX-XXXX';
+  static final String shareCode = 'Share this code to refer a friend!';
+  static final String referred = 'Did someone refer you?';
+  static final String yes = 'Yes';
+  static final String no = 'No';
+  static final String faq = 'FAQ';
+  static final String contactUs = 'Contact Us';
+  static final String termsCondition = 'Terms & Conditions';
+  static final String other = 'Other Details';
+  static final String phone = 'Enter phone number';
+  static final String exPhone = '09XX XXX XXXX';
 }

@@ -1,3 +1,4 @@
+import 'package:capstone_project/models/shelters.dart';
 import 'package:capstone_project/models/user.dart';
 import 'package:capstone_project/screens/rescuerregistration.dart';
 import 'package:capstone_project/style/theme.dart';
@@ -6,7 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../auth.dart';
 
-Widget userInfoCard(MeUser authUser, context, authUserUpdated) {
+Widget userInfoCard(Shelters authUser, context, authUserUpdated) {
   return GestureDetector(
     onTap: () {},
     child: Container(
@@ -50,10 +51,10 @@ Widget userInfoCard(MeUser authUser, context, authUserUpdated) {
                         side: BorderSide(width: 2, color: Colors.red),
                       ),
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => RescuerRegistration()));
+//                        Navigator.push(
+//                            context,
+//                            MaterialPageRoute(
+//                                builder: (context) => RescuerRegistration()));
                       },
                       child: Text(
                         'ACTIVATE ACCOUNT',

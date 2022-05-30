@@ -1,11 +1,9 @@
+import 'package:capstone_project/screens/shelter_page.dart';
 import 'package:capstone_project/services/globalvariable.dart';
-import 'package:capstone_project/services/helpermethods.dart';
 import 'package:capstone_project/widgets/wildraisedbutton.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import '../shelter_page.dart';
 
 class RescuerInfo extends StatefulWidget {
   static const String id = 'shelterinfo';
@@ -16,8 +14,8 @@ class RescuerInfo extends StatefulWidget {
 
 class _RescuerInfoState extends State<RescuerInfo> {
   final _formKey = GlobalKey<FormState>();
+
   GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
-  DatabaseReference shelterRef;
 
   void showSnackBar(String title) {
     final snackbar = SnackBar(
@@ -30,10 +28,22 @@ class _RescuerInfoState extends State<RescuerInfo> {
   var teamCount = TextEditingController();
   var companyName = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    HelperMethods.getCurrentUserInfo();
+  void updateProfile() {
+    String id = currentFirebaseUser.uid;
+
+    DatabaseReference _shelterRef =
+        FirebaseDatabase.instance.reference().child('shelters/$id/rescuerInfo');
+
+    Map rescuerMap = {
+      'teamName': teamName.text,
+      'teamCount': teamCount.text,
+      'companyName': companyName.text,
+    };
+
+    _shelterRef.set(rescuerMap); //<send to firebase realtime database
+
+    Navigator.pushNamedAndRemoveUntil(
+        context, ShelterPage.id, (route) => false);
   }
 
   @override
@@ -144,25 +154,5 @@ class _RescuerInfoState extends State<RescuerInfo> {
         );
       },
     );
-  }
-
-  void updateProfile() {
-    String id = currentFirebaseUser.uid;
-// <Firebase>
-    DatabaseReference _shelterRef =
-        FirebaseDatabase.instance.reference().child('shelters/$id');
-
-    Map<String, dynamic> rescuermap = {
-      'teamName': teamName.text,
-      'teamCount': teamCount.text,
-      'companyName': companyName.text,
-    };
-
-    _shelterRef
-        .child('rescuerInfo')
-        .set(rescuermap); //<send to firebase realtime database
-
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => ShelterPage()));
   }
 }

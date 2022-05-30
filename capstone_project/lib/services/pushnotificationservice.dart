@@ -91,7 +91,6 @@ class PushNotificationService {
         requestShleter.evacPhone = evacPhone;
         requestShleter.pickupAddress = pickUpAddress;
         requestShleter.pickup = LatLng(pickupLat, pickupLng);
-//        requestShleter.destination = LatLng(destinationLat, destinationLng);
 
         showDialog(
           context: context,

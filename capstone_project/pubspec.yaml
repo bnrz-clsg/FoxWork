@@ -43,7 +43,7 @@ dependencies:
   toast: ^0.1.5
   convex_bottom_bar: ^2.4.1
   flutter_keyboard_visibility: ^3.2.1
-  image_picker: ^0.6.7+12  
+  image_picker: ^0.6.7+12
   
  
 

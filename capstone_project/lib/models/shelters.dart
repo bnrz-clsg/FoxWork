@@ -5,26 +5,41 @@ class Shelters {
   String phone;
   String email;
   String id;
-  String addrs;
-  String cityaddrs;
-  String zipcpde;
+  String birthday;
+  String houseAddrs;
+  String city;
+  String brgy;
+  String address;
+  String gender;
+  String company_name;
+  String team_count;
+  String team_name;
 
   Shelters(
       {this.fullname,
       this.phone,
       this.email,
       this.id,
-      this.addrs,
-      this.cityaddrs,
-      this.zipcpde});
+      this.birthday,
+      this.houseAddrs,
+      this.city,
+      this.brgy,
+      this.address,
+      this.gender,
+      this.company_name,
+      this.team_count,
+      this.team_name});
 
   Shelters.fromSnapshot(DataSnapshot snapshot) {
     id = snapshot.key;
     fullname = snapshot.value['username'];
     phone = snapshot.value['phone'];
     email = snapshot.value['email'];
-    addrs = snapshot.value['shelter_details']['addrs_1'];
-    cityaddrs = snapshot.value['shelter_details']['addres_3'];
-    zipcpde = snapshot.value['shelter_details']['addrs_2'];
+    birthday = snapshot.value['birthday'];
+    gender = snapshot.value['birthday'];
+    address = snapshot.value['gender'];
+    company_name = snapshot.value['rescuerInfo']['companyName'];
+    team_count = snapshot.value['rescuerInfo']['teamCount'];
+    team_name = snapshot.value['rescuerInfo']['teamName'];
   }
 }

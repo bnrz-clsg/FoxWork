@@ -1,48 +1,47 @@
 import 'package:flutter/material.dart';
 
-class FormTextInput extends StatelessWidget {
+class FormText extends StatelessWidget {
   final String hint;
+  final String hintText;
   final Icon icon;
   final onChange;
-  final keebsType;
-  final readOnly;
+  final keyType;
   final onSave;
-  final String hintText;
   final controller;
+  final obscure;
+  final validator;
+  final sufixIcon;
 
-  FormTextInput(
-      {this.hint,
-      this.onChange,
-      this.hintText,
-      this.icon,
-      this.keebsType,
-      this.readOnly,
-      this.onSave,
-      this.controller});
+  FormText({
+    this.hint,
+    this.hintText,
+    this.icon,
+    this.onChange,
+    this.keyType,
+    this.onSave,
+    this.controller,
+    this.obscure,
+    this.validator,
+    this.sufixIcon,
+  });
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextFormField(
-        controller: controller,
-        onSaved: onSave,
-        readOnly: readOnly,
-        onChanged: onChange,
-        validator: (value) {
-          if (value.isEmpty || value.length < 2) {
-            return 'Please provide valid input';
-          }
-          return null;
-        },
-        textCapitalization: TextCapitalization.words,
-        keyboardType: keebsType,
-        decoration: InputDecoration(
+    return TextFormField(
+      validator: validator,
+      autofocus: false,
+      controller: controller,
+      onSaved: onSave,
+      onChanged: onChange,
+      keyboardType: keyType,
+      obscureText: obscure,
+      style: TextStyle(height: 0.7),
+      decoration: InputDecoration(
           prefixIcon: icon,
           labelText: hint,
           hintText: hintText,
           border: OutlineInputBorder(),
-        ),
-      ),
+          suffixIcon: sufixIcon),
     );
   }
 }

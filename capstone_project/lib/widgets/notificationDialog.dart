@@ -87,11 +87,7 @@ class NotificationDioalog extends StatelessWidget {
                     children: <Widget>[
                       Icon(Icons.contact_page_outlined, color: Colors.blue),
                       SizedBox(width: 10),
-                      Text(requestShelter.evacPhone
-//                          +
-//                          ' - ' +
-//                          requestShelter.evacEmail
-                          ),
+                      Text(requestShelter.evacPhone),
                     ],
                   ),
                   SizedBox(height: 5),
@@ -168,7 +164,7 @@ class NotificationDioalog extends StatelessWidget {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) => ProgressCircular(
-        status: 'Fetching Details',
+        status: 'Accepting request',
       ),
     );
 
@@ -185,7 +181,8 @@ class NotificationDioalog extends StatelessWidget {
       if (snapshot.value != null) {
         thisShelterID = snapshot.value.toString();
       } else {
-        print('Request for Rescue has not been found');
+        Toast.show("Request for Rescue has not been found", context,
+            duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
       }
       if (thisShelterID == requestShelter.requestID) {
         newShelterRef.set('accepted');
@@ -195,9 +192,9 @@ class NotificationDioalog extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => NewRequestPage(
-                      requestShelter: requestShelter,
-                    )));
+              builder: (context) =>
+                  NewRequestPage(requestShelter: requestShelter),
+            ));
       } else if (thisShelterID == 'cancelled') {
         Toast.show("Rescue request has been cancelled", context,
             duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
