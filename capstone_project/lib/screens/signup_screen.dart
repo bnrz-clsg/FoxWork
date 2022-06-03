@@ -364,11 +364,12 @@ class _SignupScreenState extends State<SignupScreen> {
         'username': _usernameController.text.trim(),
         'email': _emailController.text.trim(),
         'phone': _phoneController.text.trim(),
-        'birthday': dateinput.toString().trim(),
+        'birthday': dateinput.text.trim(),
         'gender': _gender.toString().trim(),
         'address': _homeAddress.text + _localAddress.text + _cityAddress.text,
         'rescuerInfo': rescuerMap,
-        'status': 'false'
+        'status': 'false',
+        'newShelters': 'waiting',
       };
       userRef.child(firebaseUser.uid).set(_map);
       Navigator.pop(context);

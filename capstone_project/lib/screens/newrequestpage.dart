@@ -270,7 +270,7 @@ class _NewRequestPageState extends State<NewRequestPage> {
     DatabaseReference historyRef = FirebaseDatabase.instance
         .reference()
         .child('shelters/${currentFirebaseUser.uid}/history/$requestID');
-    historyRef.set(true);
+    historyRef.set('true');
   }
 
   void getLocationUpdates() {
@@ -471,6 +471,7 @@ class _NewRequestPageState extends State<NewRequestPage> {
                   widget.requestShelter.evacCount +
                   ' others',
               onPress: () {
+                Navigator.pop(context);
                 Navigator.pop(context);
                 Navigator.pop(context);
 
