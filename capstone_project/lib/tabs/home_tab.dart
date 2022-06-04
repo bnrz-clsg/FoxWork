@@ -1,14 +1,10 @@
 import 'dart:async';
 import 'package:capstone_project/models/shelters.dart';
-import 'package:capstone_project/screens/rescuerregistration.dart';
 import 'package:capstone_project/services/globalvariable.dart';
 import 'package:capstone_project/services/pushnotificationservice.dart';
 import 'package:capstone_project/style/brandcolor.dart';
-import 'package:capstone_project/style/theme.dart';
-import 'package:capstone_project/utils/strings.dart';
 import 'package:capstone_project/widgets/confirmSheet.dart';
 import 'package:capstone_project/widgets/wildoutlinebutton.dart';
-import 'package:capstone_project/widgets/wildraisedbutton.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -125,7 +121,7 @@ class _HomeTabState extends State<HomeTab> {
                                 : 'You are about to stop receiving SHELTER requests',
                             onPress: () {
                               if (!isAvailable) {
-                                GoOnline();
+                                goOnline();
                                 getUpdate();
                                 Navigator.pop(context);
 
@@ -155,7 +151,7 @@ class _HomeTabState extends State<HomeTab> {
   }
 
 //< go online and push location address to firebase database>
-  void GoOnline() {
+  void goOnline() {
     // <firebase query push location to firebase>
     // Geofire.initialize('sheltersNotAvailable');
     Geofire.initialize('sheltersAvailable');
