@@ -40,7 +40,7 @@ class _EvacueeScreenState extends State<EvacueeScreen> {
   // ignore: non_constant_identifier_names
   Set<Circle> _Circles = {};
   GoogleMapController mapController;
-  var geolocator = Geolocator();
+  var geoLocator = Geolocator();
 
 // online shelter ICon
   BitmapDescriptor nearbyIcon;
@@ -51,8 +51,8 @@ class _EvacueeScreenState extends State<EvacueeScreen> {
   List<NearbyShelter> availableRescuer;
 
   void setupPositionLocator() async {
-    Position position = await geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    Position position = await geoLocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.bestForNavigation);
     currentPosition = position;
 
     LatLng pos = LatLng(position.latitude, position.longitude);
@@ -434,8 +434,7 @@ class _EvacueeScreenState extends State<EvacueeScreen> {
       'current_location': pickup.placeName,
       'location': pickupMap,
       'status': 'waiting',
-//      'shelter_id': 'waiting',
-//      'shelter_name': 'waiting',
+      'shelter_id': 'waiting',
     };
     shelterRef.set(rideMap);
   }

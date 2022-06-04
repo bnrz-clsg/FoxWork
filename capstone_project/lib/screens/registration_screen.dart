@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:capstone_project/auth.dart';
 import 'package:capstone_project/models/user.dart';
 import 'package:capstone_project/services/globalvariable.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:capstone_project/widgets/preogressDialog.dart';
 import 'package:capstone_project/widgets/text_field.dart';
 import 'package:capstone_project/widgets/wildraisedbutton.dart';

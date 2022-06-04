@@ -8,7 +8,9 @@ class FireHelper {
   static void removeFromList(String key) {
     int index = nearbyShelterList.indexWhere((element) => element.key == key);
 
-    nearbyShelterList.removeAt(index);
+    if(nearbyShelterList.length > 0) {
+      nearbyShelterList.removeAt(index);
+    }
   }
 
 //this will update the location of user everytime it move

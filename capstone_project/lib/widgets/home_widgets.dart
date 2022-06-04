@@ -8,7 +8,6 @@ import 'package:capstone_project/style/theme.dart';
 import 'package:capstone_project/utils/strings.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-
 import 'alert_dialog.dart';
 
 class HomeScreenWidgets extends StatefulWidget {

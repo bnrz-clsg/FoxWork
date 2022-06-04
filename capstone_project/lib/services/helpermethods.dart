@@ -12,7 +12,6 @@ import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -89,17 +88,6 @@ class HelperMethods {
     int radInt = randomGenerator.nextInt(max);
 
     return radInt.toDouble();
-  }
-
-  static void disableHomeTabLocationUpdates() {
-    homeTabPositionStream.pause();
-    Geofire.removeLocation(currentFirebaseUser.uid);
-  }
-
-  static void enableHomeTabLocationUpdate() {
-    homeTabPositionStream.resume();
-    Geofire.setLocation(currentFirebaseUser.uid, currentPosition.latitude,
-        currentPosition.longitude);
   }
 
   static void showProgressDialog(context) {

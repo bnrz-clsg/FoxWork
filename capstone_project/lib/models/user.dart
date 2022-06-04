@@ -19,22 +19,22 @@ class MeUser {
   String status;
 
   MeUser({
-    this.email, //
-    this.username, //
-    this.phone, //
-    this.id, //
-    this.birthday, //
+    this.email,
+    this.username,
+    this.phone,
+    this.id,
+    this.birthday,
     this.houseAddrs,
     this.city,
     this.zipcode,
-    this.address, //
-    this.gender, //
-    this.occupation, //
-    this.emergencyName, //
-    this.emergencyPhone, //
-    this.idType, //
-    this.adNumber, //
-    this.status, //
+    this.address,
+    this.gender,
+    this.occupation,
+    this.emergencyName,
+    this.emergencyPhone,
+    this.idType,
+    this.adNumber,
+    this.status,
   });
 
   MeUser.fromSnapshot(DataSnapshot snapshot) {
@@ -53,5 +53,5 @@ class MeUser {
     emergencyPhone = snapshot.value['emergencyPhone'];
   }
 
- 
+
 }

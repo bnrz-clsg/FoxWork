@@ -1,10 +1,11 @@
 import 'dart:async';
+import 'package:capstone_project/screens/pin_location_screen.dart';
 import 'package:capstone_project/services/globalvariable.dart';
 import 'package:capstone_project/style/theme.dart';
 import 'package:capstone_project/utils/strings.dart';
 import 'package:capstone_project/widgets/bottom_bar.dart';
 import 'package:capstone_project/widgets/home_widgets.dart';
-import 'package:capstone_project/widgets/host_shelter.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
@@ -97,7 +98,7 @@ class _HomeScreenMainState extends State<HomeScreenMain> {
               children: [
                 /* Join Meeting and Host Meeting Widget*/
                 HomeScreenWidgets(),
-                HostShelter(),
+                CurrentLocation(),
               ],
             ),
           ),
