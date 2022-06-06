@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:capstone_project/screens/home_screen.dart';
 import 'package:capstone_project/screens/signin_screen.dart';
 import 'package:capstone_project/services/geolocator_service.dart';

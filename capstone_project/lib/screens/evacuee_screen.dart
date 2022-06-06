@@ -4,8 +4,10 @@ import 'package:capstone_project/models/nearbyShelter.dart';
 import 'package:capstone_project/services/firehelpers.dart';
 import 'package:capstone_project/services/globalvariable.dart';
 import 'package:capstone_project/services/helpermethods.dart';
+import 'package:capstone_project/style/brandcolor.dart';
 import 'package:capstone_project/style/theme.dart';
 import 'package:capstone_project/widgets/drawer_nav.dart';
+import 'package:capstone_project/widgets/endRescueDialog.dart';
 import 'package:capstone_project/widgets/evacVariables.dart';
 import 'package:capstone_project/widgets/norescuerdialog.dart';
 import 'package:capstone_project/widgets/preogressDialog.dart';
@@ -17,6 +19,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
 
 class EvacueeScreen extends StatefulWidget {
@@ -50,6 +53,7 @@ class _EvacueeScreenState extends State<EvacueeScreen> {
   String appState = 'NORMAL';
 
   bool nearbySheltersKeysLoad = false;
+  bool isRequestingLocationDetails = false;
 
   StreamSubscription<Event> rescueSubscription;
 
@@ -86,6 +90,7 @@ class _EvacueeScreenState extends State<EvacueeScreen> {
   void showDetailSheet() async {
     getDirection();
     setState(() {
+//      original container
       findContainerHeight = 350;
     });
   }
@@ -101,7 +106,6 @@ class _EvacueeScreenState extends State<EvacueeScreen> {
   showRescueSheet() {
     setState(() {
       requestingSheetHeight = 0;
-      requestingSheetHeight = 205;
       rescueSheetHeight = 350;
     });
   }
@@ -140,273 +144,357 @@ class _EvacueeScreenState extends State<EvacueeScreen> {
   @override
   Widget build(BuildContext context) {
     createMarker();
-    return Scaffold(
-      body: (googlePlexOne != null)
-          ? Stack(children: <Widget>[
-              Column(
-                children: [
-                  Container(
-                    height: MediaQuery.of(context).size.height / 1.45,
-                    width: MediaQuery.of(context).size.width,
-                    child: GoogleMap(
-                      mapType: MapType.normal,
-                      mapToolbarEnabled: false,
-                      zoomGesturesEnabled: false,
-                      zoomControlsEnabled: false,
-                      myLocationButtonEnabled: false,
-                      myLocationEnabled: true,
-                      initialCameraPosition: googlePlexOne,
-                      polylines: _polylines,
-                      markers: _Markers,
-                      circles: _Circles,
-                      onMapCreated: _onMapCreated,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: (googlePlexOne != null)
+            ? Stack(children: <Widget>[
+                Column(
+                  children: [
+                    Container(
+                      height: MediaQuery.of(context).size.height / 1.45,
+                      width: MediaQuery.of(context).size.width,
+                      child: GoogleMap(
+                        mapType: MapType.normal,
+                        mapToolbarEnabled: false,
+                        zoomGesturesEnabled: false,
+                        zoomControlsEnabled: false,
+                        myLocationButtonEnabled: false,
+                        myLocationEnabled: true,
+                        initialCameraPosition: googlePlexOne,
+                        polylines: _polylines,
+                        markers: _Markers,
+                        circles: _Circles,
+                        onMapCreated: _onMapCreated,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              //
-              //<Circle Navigation button>
-              Positioned(
-                  top: 70,
-                  left: 30,
-                  child: GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: NavigationDrawer())),
-              //<Request for Open-House-Shelter>
-              Positioned(
-                right: 0,
-                left: 0,
-                bottom: 0,
-                child: Container(
-                  height: findContainerHeight,
-                  decoration: BoxDecoration(
-                    color: CustomTheme.backgroundColor,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(25),
-                        topRight: Radius.circular(25)),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 15.0,
-                          spreadRadius: 0.5,
-                          offset: Offset(0.7, 0.7))
-                    ],
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(24, 5, 24, 5),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        //information view
-                        Text(
-                          'Keep Calm & Asses your Situation',
-                          style:
-                              TextStyle(fontSize: 15, color: Colors.grey[800]),
-                        ),
-                        SizedBox(height: 5.0),
-                        Row(
-                          children: <Widget>[
-                            Image.asset(
-                              'assets/images/pin_location.png',
-                              height: 43.0,
-                            ),
-                            SizedBox(width: 16.0),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    'current location...',
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      color: Colors.grey,
+                  ],
+                ),
+                //
+                //<Circle Navigation button>
+                Positioned(
+                    top: 70,
+                    left: 30,
+                    child: GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: NavigationDrawer())),
+                //<Request for Open-House-Shelter>
+                Positioned(
+                  right: 0,
+                  left: 0,
+                  bottom: 0,
+                  child: Container(
+                    height: findContainerHeight,
+                    decoration: BoxDecoration(
+                      color: CustomTheme.backgroundColor,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(25),
+                          topRight: Radius.circular(25)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 15.0,
+                            spreadRadius: 0.5,
+                            offset: Offset(0.7, 0.7))
+                      ],
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(24, 5, 24, 5),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          //information view
+                          Text(
+                            'Keep Calm & Asses your Situation',
+                            style: TextStyle(
+                                fontSize: 15, color: Colors.grey[800]),
+                          ),
+                          SizedBox(height: 5.0),
+                          Row(
+                            children: <Widget>[
+                              Image.asset(
+                                'assets/images/pin_location.png',
+                                height: 43.0,
+                              ),
+                              SizedBox(width: 16.0),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      'current location...',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.grey,
+                                      ),
                                     ),
+                                    Text(
+                                      (Provider.of<AppData>(context)
+                                                  .pickupAddress !=
+                                              null)
+                                          ? Provider.of<AppData>(context)
+                                              .pickupAddress
+                                              .placeName
+                                          : 'current location',
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                      softWrap: false,
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontFamily: 'Brand-Regular',
+                                          color: Colors.black),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          Divider(),
+                          // find available openhouse button
+                          Center(
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                children: [
+                                  FormTextInput(
+                                    icon: Icon(Icons.group_add),
+                                    hint: 'Number of Person',
+                                    hintText: 'sample2',
+                                    readOnly: false,
+                                    controller: _personCount,
+                                    keebsType: TextInputType.number,
                                   ),
-                                  Text(
-                                    (Provider.of<AppData>(context)
-                                                .pickupAddress !=
-                                            null)
-                                        ? Provider.of<AppData>(context)
-                                            .pickupAddress
-                                            .placeName
-                                        : 'current location',
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
-                                    softWrap: false,
+                                  FormTextInput(
+                                    icon: Icon(Icons.content_paste),
+                                    hint: 'State your Situation/Status',
+                                    hintText: 'Whats your current situation?',
+                                    readOnly: false,
+                                    controller: _helpStatus,
+                                  ),
+                                  WildRaisedButton(
+                                    title: 'Send S.O.S.',
+                                    color: Colors.blue[400],
                                     style: TextStyle(
-                                        fontSize: 15,
-                                        fontFamily: 'Brand-Regular',
-                                        color: Colors.black),
+                                      color: Colors.white,
+                                      fontFamily: 'Brand-Bold',
+                                      fontSize: 17,
+                                      letterSpacing: 2,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        appState = 'REQUESTING';
+                                      });
+
+                                      showRequestSheet();
+                                      availableRescuer =
+                                          FireHelper.nearbyShelterList;
+                                      findRescuer();
+                                    },
                                   ),
                                 ],
                               ),
                             ),
-                          ],
-                        ),
-
-                        Divider(),
-                        // find available openhouse button
-                        Center(
-                          child: Form(
-                            key: _formKey,
-                            child: Column(
-                              children: [
-                                FormTextInput(
-                                  icon: Icon(Icons.group_add),
-                                  hint: 'Number of Person',
-                                  hintText: 'sample2',
-                                  readOnly: false,
-                                  controller: _personCount,
-                                  keebsType: TextInputType.number,
-                                ),
-                                FormTextInput(
-                                  icon: Icon(Icons.content_paste),
-                                  hint: 'State your Situation/Status',
-                                  hintText: 'Whats your current situation?',
-                                  readOnly: false,
-                                  controller: _helpStatus,
-                                ),
-                                WildRaisedButton(
-                                  title: 'Send S.O.S.',
-                                  color: Colors.blue[400],
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Brand-Bold',
-                                    fontSize: 17,
-                                    letterSpacing: 2,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      appState = 'REQUESTING';
-                                    });
-
-                                    showRequestSheet();
-                                    availableRescuer =
-                                        FireHelper.nearbyShelterList;
-                                    findRescuer();
-                                  },
-                                ),
-                              ],
-                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              //<loading waiting for open house shelter>
-              Positioned(
-                right: 0,
-                left: 0,
-                bottom: 0,
-                child: Container(
-                  height: requestingSheetHeight,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(15),
-                          topRight: Radius.circular(15)),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 15.0,
-                            spreadRadius: 0.5,
-                            offset: Offset(0.7, 0.7))
-                      ]),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 18),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              tripStatusDisplay,
-                              textAlign: TextAlign.center,
+                //<loading waiting for rescuer>
+                Positioned(
+                  right: 0,
+                  left: 0,
+                  bottom: 0,
+                  child: Container(
+                    height: requestingSheetHeight,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15)),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 15.0,
+                              spreadRadius: 0.5,
+                              offset: Offset(0.7, 0.7))
+                        ]),
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 50, vertical: 18),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Text('Waiting for Rescuer.. .',
                               style: TextStyle(
-                                  fontSize: 18, fontFamily: 'Brand-Bold'),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        Divider(thickness: 1),
-                        SizedBox(height: 20),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              //rescue Sheet
-              Positioned(
-                right: 0,
-                left: 0,
-                bottom: 0,
-                child: Container(
-                  height: rescueSheetHeight,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(15),
-                          topRight: Radius.circular(15)),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 15.0,
-                            spreadRadius: 0.5,
-                            offset: Offset(0.7, 0.7))
-                      ]),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 18),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Text('Waiting for Rescuer.. .',
-                            style: TextStyle(
-                              fontSize: 23.0,
-                              fontWeight: FontWeight.bold,
-                            )),
-                        SizedBox(height: 10),
-                        LinearProgressIndicator(),
-                        SizedBox(height: 30),
-                        GestureDetector(
-                          onDoubleTap: () {
-                            cancelrequest();
-                            resetApp();
-                          },
-                          child: Container(
-                            height: 40,
-                            width: 40,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(25),
-                                border: Border.all(
-                                  width: 1.5,
-                                  color: Colors.grey[400],
-                                )),
-                            child: Icon(
-                              Icons.close,
-                              size: 25,
+                                fontSize: 23.0,
+                                fontWeight: FontWeight.bold,
+                              )),
+                          SizedBox(height: 10),
+                          LinearProgressIndicator(),
+                          SizedBox(height: 30),
+                          GestureDetector(
+                            onDoubleTap: () {
+                              cancelrequest();
+                              resetApp();
+                            },
+                            child: Container(
+                              height: 40,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(25),
+                                  border: Border.all(
+                                    width: 1.5,
+                                    color: Colors.grey[400],
+                                  )),
+                              child: Icon(
+                                Icons.close,
+                                size: 25,
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 5),
-                        Container(
-                          child: Text('double tap to cancel SOS'),
-                        )
-                      ],
+                          SizedBox(height: 5),
+                          Container(
+                            child: Text('double tap to cancel SOS'),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ])
-          : ProgressDialog(),
+                //rescue found Sheet
+                Positioned(
+                  right: 0,
+                  left: 0,
+                  bottom: 0,
+                  child: Container(
+                    height: rescueSheetHeight,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15)),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 15.0,
+                              spreadRadius: 0.5,
+                              offset: Offset(0.7, 0.7))
+                        ]),
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 50, vertical: 18),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(height: 5),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                tripStatusDisplay,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 18, fontFamily: 'Brand-Bold'),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                          Divider(thickness: 2),
+                          SizedBox(height: 20),
+                          Text(
+                            '#' + rescuerPhone,
+                            style: TextStyle(color: BrandColors.colorTextLight),
+                          ),
+                          Text(
+                            rescuerName,
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Divider(thickness: 1),
+                          SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    height: 50,
+                                    width: 50,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular((25))),
+                                      border: Border.all(
+                                          width: 1.0,
+                                          color: BrandColors.colorTextLight),
+                                    ),
+                                    child: Icon(Icons.call),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text('Call'),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    height: 50,
+                                    width: 50,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular((25))),
+                                      border: Border.all(
+                                          width: 1.0,
+                                          color: BrandColors.colorTextLight),
+                                    ),
+                                    child: Icon(Icons.list),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text('Details'),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    height: 50,
+                                    width: 50,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular((25))),
+                                      border: Border.all(
+                                          width: 1.0,
+                                          color: BrandColors.colorTextLight),
+                                    ),
+                                    child: Icon(OMIcons.clear),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text('Cancel'),
+                                ],
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ])
+            : ProgressDialog(),
+      ),
     );
   }
 
@@ -498,18 +586,95 @@ class _EvacueeScreenState extends State<EvacueeScreen> {
     };
     shelterRef.set(rideMap);
 
-    rescueSubscription = shelterRef.onValue.listen((event) {
+    rescueSubscription = shelterRef.onValue.listen((event) async {
       // check the value of snapshot is not null
       if (event.snapshot.value == null) {
         return;
       }
+//      get rescuer details
+      if (event.snapshot.value['rescuerName'] != null) {
+        setState(() {
+          rescuerName = event.snapshot.value['rescuerName'].toString();
+        });
+      }
+// rescuer contact number
+      if (event.snapshot.value['rescuerPhone'] != null) {
+        setState(() {
+          rescuerPhone = event.snapshot.value['rescuerPhone'].toString();
+        });
+      }
+
+      //get and use rescuer location updates
+      if (event.snapshot.value['rescuer_location'] != null) {
+        double rescuerLat = double.parse(
+            event.snapshot.value['rescuer_location']['latitude'].toString());
+        double rescuerLng = double.parse(
+            event.snapshot.value['rescuer_location']['longitude'].toString());
+        LatLng rescuerLocation = LatLng(rescuerLat, rescuerLng);
+
+        if (status == 'accepted') {
+          updateToPickup(rescuerLocation);
+        } else if (status == 'arrived') {
+          setState(() {
+            tripStatusDisplay = 'Rescuer has arrived';
+          });
+        }
+      }
+
+//        check status of rescue
       if (event.snapshot.value['status'] != null) {
         status = event.snapshot.value['status'].toString();
       }
       if (status == 'accepted') {
         showRescueSheet();
+        Geofire.stopListener();
+        removeGeofireMarkers();
+      }
+
+      if (status == 'rescued') {
+        var response = await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) => EndRescue(),
+        );
+
+        if (response == 'close') {
+          shelterRef.onDisconnect();
+          shelterRef = null;
+          rescueSubscription.cancel();
+          rescueSubscription = null;
+          resetApp();
+        }
       }
     });
+  }
+
+  void removeGeofireMarkers() {
+    setState(() {
+      _Markers.removeWhere((m) => m.markerId.value.contains('rescuer'));
+    });
+  }
+
+  void updateToPickup(LatLng rescuerLocation) async {
+    if (!isRequestingLocationDetails) {
+      isRequestingLocationDetails = true;
+
+      var positionLatLng =
+          LatLng(currentPosition.latitude, currentPosition.longitude);
+
+      var thisDetails = await HelperMethods.getDirectionDetails(
+          rescuerLocation, positionLatLng);
+
+      if (thisDetails == null) {
+        return;
+      }
+
+      setState(() {
+        tripStatusDisplay = 'Rescuer is Arriving - ${thisDetails.durationText}';
+      });
+
+      isRequestingLocationDetails = false;
+    }
   }
 
 //<view all active shelter on map>
@@ -567,8 +732,7 @@ class _EvacueeScreenState extends State<EvacueeScreen> {
     // setState(() {});
   }
 
-//<this method will view list of active shelter>
-//<this is for shelter also>
+//this method will view list of active rescuer
   void updateShleteronMap() {
     setState(() {
       _Markers.clear();
@@ -607,6 +771,12 @@ class _EvacueeScreenState extends State<EvacueeScreen> {
       _Circles.clear();
       findContainerHeight = 350;
       requestingSheetHeight = 0;
+      rescueSheetHeight = 0;
+
+      status = '';
+      rescuerName = '';
+      rescuerPhone = '';
+      tripStatusDisplay = 'Rescuer Estimated Arrival';
     });
   }
 

@@ -72,50 +72,53 @@ class _HomeScreenMainState extends State<HomeScreenMain> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: GoogleMap(
-              mapType: MapType.normal,
-              mapToolbarEnabled: false,
-              // compassEnabled: false,
-              zoomGesturesEnabled: false,
-              zoomControlsEnabled: false,
-              myLocationButtonEnabled: false,
-              myLocationEnabled: true,
-              initialCameraPosition: googlePlexOne,
-              onMapCreated: _onmMapCreated,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: Stack(
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: GoogleMap(
+                mapType: MapType.normal,
+                mapToolbarEnabled: false,
+                // compassEnabled: false,
+                zoomGesturesEnabled: false,
+                zoomControlsEnabled: false,
+                myLocationButtonEnabled: false,
+                myLocationEnabled: true,
+                initialCameraPosition: googlePlexOne,
+                onMapCreated: _onmMapCreated,
+              ),
             ),
-          ),
-          Container(
-            height: double.infinity,
-            child: PageView(
-              physics: NeverScrollableScrollPhysics(),
-              controller: _pageController,
-              children: [
-                /* Join Meeting and Host Meeting Widget*/
-                HomeScreenWidgets(),
-                CurrentLocation(),
-              ],
+            Container(
+              height: double.infinity,
+              child: PageView(
+                physics: NeverScrollableScrollPhysics(),
+                controller: _pageController,
+                children: [
+                  /* Join Meeting and Host Meeting Widget*/
+                  HomeScreenWidgets(),
+                  CurrentLocation(),
+                ],
+              ),
             ),
-          ),
-          Positioned(
-            top: 150,
-            right: 0,
-            left: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                tabButton(0, AppContent.sos),
-                tabButton(1, AppContent.snq),
-              ],
+            Positioned(
+              top: 150,
+              right: 0,
+              left: 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  tabButton(0, AppContent.sos),
+                  tabButton(1, AppContent.snq),
+                ],
+              ),
             ),
-          ),
-          BottomBar()
-        ],
+            BottomBar()
+          ],
+        ),
       ),
     );
   }
