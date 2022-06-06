@@ -148,7 +148,7 @@ class _NewRequestPageState extends State<NewRequestPage> {
                             shelterRequestRef.child('status').set(('arrived'));
 
                             setState(() {
-                              buttonTitle = 'ARRIVED';
+                              buttonTitle = 'On-Rescue';
                               buttonColor = Colors.green;
                             });
                           } else if (status == 'ARRIVED') {
@@ -473,8 +473,6 @@ class _NewRequestPageState extends State<NewRequestPage> {
               onPress: () {
                 Navigator.pop(context);
                 Navigator.pop(context);
-                Navigator.pop(context);
-
                 HelperMethods.enableHomeTabLocationUpdates();
               },
             ));
