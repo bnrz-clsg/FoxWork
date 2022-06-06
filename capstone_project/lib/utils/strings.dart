@@ -28,7 +28,7 @@ class AppContent {
   static final String myLocation = "My Location";
   static final String weatherNews = "Weather News";
   static final String sos = "S.O.S";
-  static final String snq = "Search & Rescue";
+  static final String snq = "Active rescuer";
   static final String findBayanihanShelter =
       "Look for nearest B A Y A N I H A N shelter?";
   static final String findEvacuation = "Search Nearest Evacuation";

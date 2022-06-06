@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:capstone_project/screens/pin_location_screen.dart';
+import 'package:capstone_project/screens/viewactiverescuerscreen.dart';
 import 'package:capstone_project/services/globalvariable.dart';
 import 'package:capstone_project/style/theme.dart';
 import 'package:capstone_project/utils/strings.dart';
@@ -100,7 +101,7 @@ class _HomeScreenMainState extends State<HomeScreenMain> {
                 children: [
                   /* Join Meeting and Host Meeting Widget*/
                   HomeScreenWidgets(),
-                  CurrentLocation(),
+                  ActiveRescuerScreen(),
                 ],
               ),
             ),

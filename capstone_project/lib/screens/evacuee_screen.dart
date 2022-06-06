@@ -407,7 +407,7 @@ class _EvacueeScreenState extends State<EvacueeScreen> {
                           Divider(thickness: 2),
                           SizedBox(height: 20),
                           Text(
-                            '#' + rescuerPhone,
+                            '# ' + rescuerPhone,
                             style: TextStyle(color: BrandColors.colorTextLight),
                           ),
                           Text(
@@ -419,74 +419,6 @@ class _EvacueeScreenState extends State<EvacueeScreen> {
                           ),
                           Divider(thickness: 1),
                           SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    height: 50,
-                                    width: 50,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular((25))),
-                                      border: Border.all(
-                                          width: 1.0,
-                                          color: BrandColors.colorTextLight),
-                                    ),
-                                    child: Icon(Icons.call),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text('Call'),
-                                ],
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    height: 50,
-                                    width: 50,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular((25))),
-                                      border: Border.all(
-                                          width: 1.0,
-                                          color: BrandColors.colorTextLight),
-                                    ),
-                                    child: Icon(Icons.list),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text('Details'),
-                                ],
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    height: 50,
-                                    width: 50,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular((25))),
-                                      border: Border.all(
-                                          width: 1.0,
-                                          color: BrandColors.colorTextLight),
-                                    ),
-                                    child: Icon(OMIcons.clear),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text('Cancel'),
-                                ],
-                              ),
-                            ],
-                          )
                         ],
                       ),
                     ),
