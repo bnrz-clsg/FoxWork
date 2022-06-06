@@ -1,10 +1,10 @@
-import 'package:capstone_project/screens/registration.dart';
 import 'package:capstone_project/screens/shelter_page.dart';
 import 'package:capstone_project/screens/signup_screen.dart';
+import 'package:capstone_project/screens/verifyscreen.dart';
 import 'package:capstone_project/services/globalvariable.dart';
+import 'package:capstone_project/style/theme.dart';
 import 'package:capstone_project/widgets/login_header.dart';
 import 'package:capstone_project/widgets/progress_message_dialog.dart';
-import 'package:capstone_project/widgets/round_button.dart';
 import 'package:capstone_project/widgets/termsandcondition.dart';
 import 'package:capstone_project/widgets/wildraisedbutton.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -41,6 +41,14 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
     );
+  }
+
+  bool _passwordVisible;
+
+  @override
+  void initState() {
+    super.initState();
+    _passwordVisible = false;
   }
 
   @override
@@ -111,9 +119,26 @@ class _LoginScreenState extends State<LoginScreen> {
                                       }
                                       return null;
                                     },
-                                    decoration:
-                                        InputDecoration(labelText: 'Password'),
-                                    obscureText: true,
+                                    decoration: InputDecoration(
+                                      labelText: 'Password',
+                                      suffixIcon: IconButton(
+                                        icon: Icon(
+                                          // Based on passwordVisible state choose the icon
+                                          _passwordVisible
+                                              ? Icons.visibility
+                                              : Icons.visibility_off,
+                                          color: CustomTheme.grey,
+                                        ),
+                                        onPressed: () {
+                                          // Update the state i.e. toogle the state of passwordVisible variable
+                                          setState(() {
+                                            _passwordVisible =
+                                                !_passwordVisible;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    obscureText: _passwordVisible,
                                   ),
                                   SizedBox(height: 12.0),
 
@@ -210,8 +235,8 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_firebaseUser != null) {
       userRef.child(_firebaseUser.uid).once().then((DataSnapshot snap) {
         if (snap.value != null) {
-          Navigator.pushNamedAndRemoveUntil(
-              context, ShelterPage.id, (route) => false);
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => VerifyScreen()));
         } else {
           // Exit ProgressDialog
           Navigator.pop(context);

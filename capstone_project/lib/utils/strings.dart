@@ -102,8 +102,8 @@ class AppContent {
   static final String email = ' Email';
 
   static final String repassword = 'Repeat Password';
-  static final String register = 'Don\'t have RESIBO account? ';
-  static final String haveAccount = 'Already have RESIBO account!';
+  static final String register = 'Don\'t have RESCUER account? ';
+  static final String haveAccount = 'Already have RESCUER account!';
   static final String googleConn = 'Connect with Google';
   static final String facebookConn = ' Connect with Facebook';
   static final String emailConn = 'Sign-up with Email';

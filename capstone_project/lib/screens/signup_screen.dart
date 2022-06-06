@@ -62,8 +62,7 @@ class _SignupScreenState extends State<SignupScreen> {
     _passwordVisible = false;
   }
 
-  RegExp regex =
-      RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+  RegExp regex = RegExp(r'^(?=.*?[a-z])(?=.*?[0-9]).{7,}$');
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +154,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   ),
                                   validator: (value) {
                                     if (!regex.hasMatch(value)) {
-                                      return 'Password must at least 8 characters long! \ncontain 1 UPPERCASE \ncontain 1 lowercase \ncontain 1 number\ncontain 1 special character';
+                                      return 'Password must at least 7 characters long!\nMust have combination of numbers and letters';
                                     }
                                     return null;
                                   },
