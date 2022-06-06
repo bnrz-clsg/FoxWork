@@ -6,6 +6,7 @@ import 'package:capstone_project/services/globalvariable.dart';
 import 'package:capstone_project/services/helpermethods.dart';
 import 'package:capstone_project/style/theme.dart';
 import 'package:capstone_project/widgets/drawer_nav.dart';
+import 'package:capstone_project/widgets/evacVariables.dart';
 import 'package:capstone_project/widgets/norescuerdialog.dart';
 import 'package:capstone_project/widgets/preogressDialog.dart';
 import 'package:capstone_project/widgets/text_field.dart';
@@ -31,6 +32,7 @@ class _EvacueeScreenState extends State<EvacueeScreen> {
   double findContainerHeight = 315;
   double requestingSheetHeight = 0;
   double mapBottomPadding = 0;
+  double rescueSheetHeight = 0;
 
   Completer<GoogleMapController> _controller = Completer();
   List<LatLng> polylinrCoordinates = [];
@@ -45,8 +47,11 @@ class _EvacueeScreenState extends State<EvacueeScreen> {
 // online shelter ICon
   BitmapDescriptor nearbyIcon;
   DatabaseReference shelterRef;
+  String appState = 'NORMAL';
 
   bool nearbySheltersKeysLoad = false;
+
+  StreamSubscription<Event> rescueSubscription;
 
   List<NearbyShelter> availableRescuer;
 
@@ -91,6 +96,14 @@ class _EvacueeScreenState extends State<EvacueeScreen> {
       requestingSheetHeight = 205;
     });
     createShelterRequest();
+  }
+
+  showRescueSheet() {
+    setState(() {
+      requestingSheetHeight = 0;
+      requestingSheetHeight = 205;
+      rescueSheetHeight = 350;
+    });
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -161,8 +174,6 @@ class _EvacueeScreenState extends State<EvacueeScreen> {
                         Navigator.pop(context);
                       },
                       child: NavigationDrawer())),
-              //
-
               //<Request for Open-House-Shelter>
               Positioned(
                 right: 0,
@@ -267,10 +278,13 @@ class _EvacueeScreenState extends State<EvacueeScreen> {
                                     letterSpacing: 2,
                                   ),
                                   onPressed: () {
+                                    setState(() {
+                                      appState = 'REQUESTING';
+                                    });
+
                                     showRequestSheet();
                                     availableRescuer =
                                         FireHelper.nearbyShelterList;
-
                                     findRescuer();
                                   },
                                 ),
@@ -290,6 +304,52 @@ class _EvacueeScreenState extends State<EvacueeScreen> {
                 bottom: 0,
                 child: Container(
                   height: requestingSheetHeight,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(15),
+                          topRight: Radius.circular(15)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 15.0,
+                            spreadRadius: 0.5,
+                            offset: Offset(0.7, 0.7))
+                      ]),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 18),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              tripStatusDisplay,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 18, fontFamily: 'Brand-Bold'),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20),
+                        Divider(thickness: 1),
+                        SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              //rescue Sheet
+              Positioned(
+                right: 0,
+                left: 0,
+                bottom: 0,
+                child: Container(
+                  height: rescueSheetHeight,
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
@@ -437,6 +497,19 @@ class _EvacueeScreenState extends State<EvacueeScreen> {
       'shelter_id': 'waiting',
     };
     shelterRef.set(rideMap);
+
+    rescueSubscription = shelterRef.onValue.listen((event) {
+      // check the value of snapshot is not null
+      if (event.snapshot.value == null) {
+        return;
+      }
+      if (event.snapshot.value['status'] != null) {
+        status = event.snapshot.value['status'].toString();
+      }
+      if (status == 'accepted') {
+        showRescueSheet();
+      }
+    });
   }
 
 //<view all active shelter on map>
@@ -521,6 +594,9 @@ class _EvacueeScreenState extends State<EvacueeScreen> {
 //cancel request
   void cancelrequest() {
     shelterRef.remove();
+    setState(() {
+      appState = 'NORMAL';
+    });
   }
 
   resetApp() {
@@ -576,6 +652,38 @@ class _EvacueeScreenState extends State<EvacueeScreen> {
       } else {
         return;
       }
+
+      const onSecTick = Duration(seconds: 1);
+      var timer = Timer.periodic(onSecTick, (timer) {
+// Stop timer when Rescue request has been cancelled by user
+        if (appState != 'REQUESTING') {
+          rescuerRef.set('cancelled');
+          rescuerRef.onDisconnect();
+          timer.cancel();
+          rescuerRequestTimeout = 60;
+        }
+
+        rescuerRequestTimeout--;
+
+        // a value event listener for reccuer accepting rescue request
+        rescuerRef.onValue.listen((event) {
+          // confirms that driver has clicked accepted for the new trip request
+          if (event.snapshot.value.toString() == 'accepted') {
+            rescuerRef.onDisconnect();
+            timer.cancel();
+            rescuerRequestTimeout = 60;
+          }
+        });
+
+        if (rescuerRequestTimeout == 0) {
+          rescuerRef.set('timeout');
+          rescuerRef.onDisconnect();
+          rescuerRequestTimeout = 60;
+          timer.cancel();
+//          Find another rescuer
+          findRescuer();
+        }
+      });
     });
   }
 }
