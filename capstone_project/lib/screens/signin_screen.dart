@@ -3,6 +3,7 @@ import 'package:capstone_project/services/globalvariable.dart';
 import 'package:capstone_project/widgets/login_header.dart';
 import 'package:capstone_project/widgets/progress_message_dialog.dart';
 import 'package:capstone_project/widgets/round_button.dart';
+import 'package:capstone_project/widgets/termsandcondition.dart';
 import 'package:capstone_project/widgets/wildraisedbutton.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -46,138 +47,143 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: ExactAssetImage('assets/images/loginBG.jpg'),
-            fit: BoxFit.cover,
-            alignment: Alignment.topCenter,
+      body: Stack(children: <Widget>[
+        Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: ExactAssetImage('assets/images/loginBG.jpg'),
+              fit: BoxFit.cover,
+              alignment: Alignment.topCenter,
+            ),
           ),
-        ),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(8, 40, 8, 0),
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  //Header
-                  LoginHeader(),
-                  /* Start Email Login */
-                  Center(
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.white70, width: 1),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      // color: Color.fromRGBO(225, 225, 225, .8),
-                      margin: EdgeInsets.all(20),
-                      child: SingleChildScrollView(
-                        child: Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Form(
-                            key: _formKey,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                //TEXT FORM EMAIL
-                                TextFormField(
-                                  controller: _emailController,
-                                  key: ValueKey('email'),
-                                  validator: (value) {
-                                    if (value.isEmpty || !value.contains('@')) {
-                                      return 'Pelase enter a valid email address!';
-                                    }
-                                    return null;
-                                  },
-                                  keyboardType: TextInputType.emailAddress,
-                                  decoration: InputDecoration(
-                                    labelText: 'Email address',
-                                  ),
-                                ),
-                                TextFormField(
-                                  controller: _passwordController,
-                                  key: ValueKey('password'),
-                                  validator: (value) {
-                                    if (value.isEmpty || value.length < 7) {
-                                      return 'Password must be at least 7 characters long!';
-                                    }
-                                    return null;
-                                  },
-                                  decoration:
-                                      InputDecoration(labelText: 'Password'),
-                                  obscureText: true,
-                                ),
-                                SizedBox(height: 12.0),
-
-                                WildRaisedButton(
-                                  size: Size(double.infinity, 35),
-                                  color: Colors.blue,
-                                  style: TextStyle(
-                                      letterSpacing: 1.5, fontSize: 16),
-                                  title: 'LOGIN',
-                                  onPressed: () {
-                                    final isValid =
-                                        _formKey.currentState.validate();
-                                    if (isValid) {
-                                      _loginUser(context);
-                                    }
-                                  },
-                                ),
-                                TextButton(
-                                    style: TextButton.styleFrom(
-                                      textStyle: const TextStyle(fontSize: 16),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.pushNamedAndRemoveUntil(context,
-                                          SignupScreen.id, (route) => false);
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(8, 40, 8, 0),
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    //Header
+                    LoginHeader(),
+                    /* Start Email Login */
+                    Center(
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(color: Colors.white70, width: 1),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        // color: Color.fromRGBO(225, 225, 225, .8),
+                        margin: EdgeInsets.all(20),
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  //TEXT FORM EMAIL
+                                  TextFormField(
+                                    controller: _emailController,
+                                    key: ValueKey('email'),
+                                    validator: (value) {
+                                      if (value.isEmpty ||
+                                          !value.contains('@')) {
+                                        return 'Pelase enter a valid email address!';
+                                      }
+                                      return null;
                                     },
-                                    child: Text(
-                                        'Don\'t have an account? Sign up here!',
-                                        style: TextStyle(
-                                            fontSize: 14, color: Colors.blue))),
-                              ],
+                                    keyboardType: TextInputType.emailAddress,
+                                    decoration: InputDecoration(
+                                      labelText: 'Email address',
+                                    ),
+                                  ),
+                                  TextFormField(
+                                    controller: _passwordController,
+                                    key: ValueKey('password'),
+                                    validator: (value) {
+                                      if (value.isEmpty || value.length < 7) {
+                                        return 'Password must be at least 7 characters long!';
+                                      }
+                                      return null;
+                                    },
+                                    decoration:
+                                        InputDecoration(labelText: 'Password'),
+                                    obscureText: true,
+                                  ),
+                                  SizedBox(height: 12.0),
+
+                                  WildRaisedButton(
+                                    size: Size(double.infinity, 35),
+                                    color: Colors.blue,
+                                    style: TextStyle(
+                                        letterSpacing: 1.5, fontSize: 16),
+                                    title: 'LOGIN',
+                                    onPressed: () {
+                                      final isValid =
+                                          _formKey.currentState.validate();
+                                      if (isValid) {
+                                        _loginUser(context);
+                                      }
+                                    },
+                                  ),
+                                  TextButton(
+                                      style: TextButton.styleFrom(
+                                        textStyle:
+                                            const TextStyle(fontSize: 16),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    SignupScreen()));
+                                      },
+                                      child: Text(
+                                          'Don\'t have an account? Sign up here!',
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.blue))),
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  /* END */
-                  Divider(),
-                  Text('Or continue using.. .'),
-                  SizedBox(height: 20),
-                  GestureDetector(
-                    onTap: () {
-                      signInWithGoogle().then((result) {
-                        if (result != null) {
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                                builder: (context) => HomeScreenMain()),
-                          );
-                        }
-                      });
-                    },
-                    child: googleButton('google_logo'),
-                  ),
-                  WildRaisedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => HomeScreenMain()));
-                    },
-                    title: 'tester',
-                  ),
-                ],
+                    /* END */
+                    Divider(),
+                    Text('Or continue using.. .'),
+                    SizedBox(height: 20),
+                    GestureDetector(
+                      onTap: () {
+                        signInWithGoogle().then((result) {
+                          if (result != null) {
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => HomeScreenMain()),
+                            );
+                          }
+                        });
+                      },
+                      child: googleButton('google_logo'),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
+        Positioned(
+          bottom: 5,
+          left: 0,
+          right: 0,
+          child: termsandconditions(),
+        ),
+      ]),
     );
   }
 

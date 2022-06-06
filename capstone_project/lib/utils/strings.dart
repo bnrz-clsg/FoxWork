@@ -96,4 +96,8 @@ class AppContent {
       "Your account is on process of validation! Kindly refresh in a while.. .";
   static final String acctAuth = "Account Activation!";
   static final String regAcct = "Register to activate account?";
+  static final String terms = 'Terms of Service';
+  static final String policy = 'Privacy Policy';
+  static final String termsFirst = 'By signing up, you agreed to our ';
+  static final String and = 'and ';
 }
