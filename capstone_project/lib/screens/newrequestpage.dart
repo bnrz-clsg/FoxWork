@@ -486,7 +486,7 @@ class _NewRequestPageState extends State<NewRequestPage> {
         .child('shelters/${currentFirebaseUser.uid}/rescuedCount');
     rescuedRef.once().then((DataSnapshot snapshot) {
       if (snapshot.value != null) {
-        var pastRescue = int.parse(snapshot.value);
+        int pastRescue = int.parse(snapshot.value);
 
         var rescuedCount =
             int.parse(widget.requestShelter.evacCount) + pastRescue;

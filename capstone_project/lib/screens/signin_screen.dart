@@ -1,16 +1,18 @@
+import 'dart:async';
+
 import 'package:capstone_project/screens/shelter_page.dart';
 import 'package:capstone_project/screens/signup_screen.dart';
-import 'package:capstone_project/screens/verifyscreen.dart';
+import 'package:capstone_project/widgets/VerifyUserDialog.dart';
 import 'package:capstone_project/services/globalvariable.dart';
 import 'package:capstone_project/style/theme.dart';
 import 'package:capstone_project/widgets/login_header.dart';
+import 'package:capstone_project/widgets/progress_indicator.dart';
 import 'package:capstone_project/widgets/progress_message_dialog.dart';
 import 'package:capstone_project/widgets/termsandcondition.dart';
 import 'package:capstone_project/widgets/wildraisedbutton.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import '../auth.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'LoginScreen';
@@ -44,6 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   bool _passwordVisible;
+  Timer timer;
 
   @override
   void initState() {
@@ -235,12 +238,19 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_firebaseUser != null) {
       userRef.child(_firebaseUser.uid).once().then((DataSnapshot snap) {
         if (snap.value != null) {
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => VerifyScreen()));
+          if (_firebaseUser.emailVerified) {
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => ShelterPage()));
+          } else {
+            Navigator.pop(context);
+            _auth.signOut();
+            showDialog(
+                context: context,
+                builder: (BuildContext context) => VerifyUserDialog());
+          }
         } else {
           // Exit ProgressDialog
           Navigator.pop(context);
-
           _auth.signOut();
           var errorMessage = 'No record for this user. Create new account';
           _showErrorDialog(errorMessage);
@@ -249,7 +259,6 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       // Exit ProgressDialog
       Navigator.pop(context);
-
       var errorMessage = 'Error occured, Try login again!';
       _showErrorDialog(errorMessage);
     }

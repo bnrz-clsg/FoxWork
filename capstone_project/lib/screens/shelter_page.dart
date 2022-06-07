@@ -1,6 +1,6 @@
 import 'package:capstone_project/style/brandcolor.dart';
+import 'package:capstone_project/tabs/dashboardtab.dart';
 import 'package:capstone_project/tabs/home_tab.dart';
-import 'package:capstone_project/tabs/pin_location_screen.dart';
 import 'package:capstone_project/tabs/rescuerInfo.dart';
 import 'package:capstone_project/tabs/setting_screen.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +45,7 @@ class _ShelterPageState extends State<ShelterPage>
         children: <Widget>[
           HomeTab(),
           RescuerInfo(),
-          CurrentLocation(),
+          DashboardTab(),
           SettingScreen(),
         ],
       ),
@@ -56,12 +56,12 @@ class _ShelterPageState extends State<ShelterPage>
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.night_shelter),
-            label: 'Shelter',
+            icon: Icon(Icons.edit),
+            label: 'Info',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.my_location),
-            label: 'Location',
+            icon: Icon(Icons.dashboard),
+            label: 'Dashboard',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

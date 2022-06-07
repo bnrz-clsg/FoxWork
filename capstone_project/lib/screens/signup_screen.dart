@@ -352,6 +352,7 @@ class _SignupScreenState extends State<SignupScreen> {
     }))
         .user;
     if (firebaseUser != null) {
+      firebaseUser.sendEmailVerification();
       Map rescuerMap = {
         'teamName': teamName.text.trim(),
         'teamCount': teamCount.text.trim(),

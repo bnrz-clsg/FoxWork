@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:capstone_project/models/shelters.dart';
 import 'package:capstone_project/services/globalvariable.dart';
+import 'package:capstone_project/services/helpermethods.dart';
 import 'package:capstone_project/services/pushnotificationservice.dart';
 import 'package:capstone_project/style/brandcolor.dart';
 import 'package:capstone_project/widgets/confirmSheet.dart';
@@ -58,6 +59,8 @@ class _HomeTabState extends State<HomeTab> {
 
     pushNotificationService.initialize(context);
     pushNotificationService.getToken();
+
+    HelperMethods.getHistoryInfo(context);
   }
 
   @override

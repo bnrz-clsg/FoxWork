@@ -1,6 +1,7 @@
 import 'package:capstone_project/models/shelters.dart';
 import 'package:capstone_project/models/user.dart';
 import 'package:capstone_project/screens/rescuerregistration.dart';
+import 'package:capstone_project/services/globalvariable.dart';
 import 'package:capstone_project/style/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,31 +37,12 @@ Widget userInfoCard(Shelters authUser, context, authUserUpdated) {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Text(
-                      'Full name',
+                      currentSheltersInfo.fullname,
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
                     ),
-                    if (authUser.email != null)
-                      Text(
-                        authUser.email.toString().length > 20
-                            ? authUser.email.toString().substring(0, 20) + ".."
-                            : authUser.email.toString(),
-                        style: CustomTheme.subTitleText,
-                      ),
-                    OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        shape: StadiumBorder(),
-                        side: BorderSide(width: 2, color: Colors.red),
-                      ),
-                      onPressed: () {
-//                        Navigator.push(
-//                            context,
-//                            MaterialPageRoute(
-//                                builder: (context) => RescuerRegistration()));
-                      },
-                      child: Text(
-                        'ACTIVATE ACCOUNT',
-                        style: TextStyle(color: Colors.red, fontSize: 16),
-                      ),
-                    )
+                    Text(currentSheltersInfo.email),
                   ],
                 ),
               ],
