@@ -44,22 +44,6 @@ Widget userInfoCard(MeUser authUser, context, authUserUpdated) {
                             : authUser.email.toString(),
                         style: CustomTheme.subTitleText,
                       ),
-                    OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        shape: StadiumBorder(),
-                        side: BorderSide(width: 2, color: Colors.red),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => UserRegistration()));
-                      },
-                      child: Text(
-                        'ACTIVATE ACCOUNT',
-                        style: TextStyle(color: Colors.red, fontSize: 16),
-                      ),
-                    )
                   ],
                 ),
               ],

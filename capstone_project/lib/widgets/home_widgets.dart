@@ -209,23 +209,6 @@ class _HomeScreenWidgetsState extends State<HomeScreenWidgets> {
                                         spreadRadius: 0.8,
                                         offset: Offset(0.7, 0.7))
                                   ]),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  Image(
-                                    image: AssetImage(
-                                      'assets/images/weather_icon.png',
-                                    ),
-                                    height: 100,
-                                  ),
-                                  Text(AppContent.weatherNews,
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w900))
-                                ],
-                              ),
                             ),
                           ),
                         ),
