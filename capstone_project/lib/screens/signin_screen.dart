@@ -242,11 +242,14 @@ class _LoginScreenState extends State<LoginScreen> {
             Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (context) => ShelterPage()));
           } else {
+            String email = _emailController.text.trim();
             Navigator.pop(context);
             _auth.signOut();
             showDialog(
                 context: context,
-                builder: (BuildContext context) => VerifyUserDialog());
+                builder: (BuildContext context) => VerifyUserDialog(
+                      email: email,
+                    ));
           }
         } else {
           // Exit ProgressDialog

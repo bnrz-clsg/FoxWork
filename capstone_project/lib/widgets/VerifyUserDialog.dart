@@ -2,6 +2,10 @@ import 'package:capstone_project/services/globalvariable.dart';
 import 'package:flutter/material.dart';
 
 class VerifyUserDialog extends StatelessWidget {
+  final String email;
+
+  const VerifyUserDialog({this.email});
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -25,7 +29,7 @@ class VerifyUserDialog extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                'An email has been sent to ${currentFirebaseUser.email}. Please verify',
+                'An email has been sent to ${email}. Please verify',
                 textAlign: TextAlign.center,
               ),
             ),
